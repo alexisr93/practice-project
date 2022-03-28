@@ -14,7 +14,7 @@ const generatePersonsData = (number) => {
       userName: faker.internet.userName(firstName, lastName),
       firstName: firstName,
       lastName: lastName,
-      phoneNumer: faker.phone.phoneNumber('###-###-####'),
+      phoneNumber: faker.phone.phoneNumber('###-###-####'),
       userCreatedDate: faker.date.future(),
     });
 
