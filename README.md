@@ -9,11 +9,16 @@ Practice project using:
 - faker-js
 
 ### Client
+
+`cd` into client directory from practice-project directory
+
 Install dependencies `npm install`
 
 Run client `npm start`
 
 ### Server
+
+`cd` into server directory from practice-project directory
 
 Install dependencies `npm install`
 
