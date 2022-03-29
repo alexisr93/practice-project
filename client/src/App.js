@@ -1,9 +1,10 @@
 import './App.css';
+import UserTable from './UserTable';
 
 function App() {
   return (
     <div className="App">
-      Hello, World.
+      <UserTable></UserTable>
     </div>
   );
 }
