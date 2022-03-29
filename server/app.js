@@ -8,14 +8,16 @@ const generatePersonsData = (number) => {
   while (i <= number) {
       const firstName = faker.name.firstName();
       const lastName = faker.name.lastName();
+      let date = faker.date.between('2015-01-01T00:00:00.000Z', '2022-01-01T00:00:00.000Z');
+      date = date.getMonth() + "/" + date.getDay() + "/" + date.getFullYear();
 
     persons.push({
       id: i,
-      userName: faker.internet.userName(firstName, lastName),
+      username: faker.internet.userName(firstName, lastName),
       firstName: firstName,
       lastName: lastName,
       phoneNumber: faker.phone.phoneNumber('###-###-####'),
-      userCreatedDate: faker.date.future(),
+      accountCreatedDate: date,
     });
 
     i++;
