@@ -77,7 +77,7 @@ function EditContactModal(props) {
             value: phoneNumber,
           },
           {
-            name: ["userCreatedDate"],
+            name: ["accountCreatedDate"],
             value: accountCreatedDate,
           },
         ]}
