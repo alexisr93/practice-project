@@ -5,6 +5,8 @@ Practice project using:
 - flow
 - ant design
 - axios
+- json-server
+- faker-js
 
 ### Client
 Install dependencies `npm install`
