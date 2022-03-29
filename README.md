@@ -19,4 +19,4 @@ Install dependencies `npm install`
 
 Create new data in db.json `npm run new`
 
-Run server `npm start
+Run server `npm start`
