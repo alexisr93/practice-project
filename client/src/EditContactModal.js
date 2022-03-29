@@ -4,37 +4,33 @@ import axios from 'axios';
 
 function EditContactModal(props) {
   const [visible, setVisible] = useState(false);
-  const [id, setId] = useState('');
-  const [form] = Form.useForm();
   const [confirmLoading, setConfirmLoading] = useState(false);
-  const [username, setUsername] = useState('');
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [phoneNumber, setPhoneNumber] = useState('');
-  const [accountCreatedDate, setAccountCreatedDate] = useState('');
+  const [form] = Form.useForm();
+  const [formData, setFormData] = useState({
+    id: '',
+    username: '',
+    firstName: '',
+    lastName: '',
+    phoneNumber: '',
+    accountCreatedDate: '',
+
+  });
 
   useEffect(() => {
     setVisible(props.modalData.visible);
-    setId(props.modalData.record.id);
-    setUsername(props.modalData.record.username);
-    setFirstName(props.modalData.record.firstName);
-    setLastName(props.modalData.record.lastName);
-    setPhoneNumber(props.modalData.record.phoneNumber);
-    setAccountCreatedDate(props.modalData.record.accountCreatedDate);
+    setFormData({
+      id: props.modalData.record.id,
+      username: props.modalData.record.username,
+      firstName: props.modalData.record.firstName,
+      lastName: props.modalData.record.lastName,
+      phoneNumber: props.modalData.record.phoneNumber,
+      accountCreatedDate: props.modalData.record.accountCreatedDate,
+    });
   }, [props]);
 
   const handleOk = () => {
     setConfirmLoading(true);
-    axios.put('http://localhost:3003/users/'+ id, 
-      {
-        id: id,
-        username: username,
-        firstName: firstName,
-        lastName: lastName,
-        phoneNumber: phoneNumber,
-        accountCreatedDate: accountCreatedDate,
-      }
-    )
+    axios.put('http://localhost:3003/users/'+ formData.id, formData)
     .then((res) => {
       console.log(res.data);
     });
@@ -46,6 +42,14 @@ function EditContactModal(props) {
   const handleCancel = () => {
     setVisible(false);
   };
+
+  const handleChange = (e) => {
+    setFormData((oldFormData) => {
+      oldFormData[e.target.id] = e.target.value;
+
+      return oldFormData;
+    });
+  }
 
   return (
     <>
@@ -62,23 +66,23 @@ function EditContactModal(props) {
         fields={[
           {
             name: ["username"],
-            value: username,
+            value: formData.username,
           },
           {
             name: ["firstName"],
-            value: firstName,
+            value: formData.firstName,
           },
           {
             name: ["lastName"],
-            value: lastName,
+            value: formData.lastName,
           },
           {
             name: ["phoneNumber"],
-            value: phoneNumber,
+            value: formData.phoneNumber,
           },
           {
             name: ["accountCreatedDate"],
-            value: accountCreatedDate,
+            value: formData.accountCreatedDate,
           },
         ]}
       >
@@ -87,7 +91,7 @@ function EditContactModal(props) {
           name="username"
         >
           <Input
-            onChange={(e) => setUsername(e.target.value)}
+            onChange={handleChange}
           >
           </Input>
         </Form.Item>
@@ -96,7 +100,7 @@ function EditContactModal(props) {
           name="firstName"
         >
           <Input
-            onChange={(e) => setFirstName(e.target.value)}
+            onChange={handleChange}
           >
           </Input>
         </Form.Item>
@@ -105,7 +109,7 @@ function EditContactModal(props) {
           name="lastName"
         >
           <Input
-            onChange={(e) => setLastName(e.target.value)}
+            onChange={handleChange}
           >
           </Input>
         </Form.Item>
@@ -114,7 +118,7 @@ function EditContactModal(props) {
           name="phoneNumber"
         >
           <Input 
-            onChange={(e) => setPhoneNumber(e.target.value)}
+            onChange={handleChange}
           >
           </Input>
         </Form.Item>
@@ -123,7 +127,7 @@ function EditContactModal(props) {
           name="accountCreatedDate"
         >
           <Input
-            onChange={(e) => setAccountCreatedDate(e.target.value)}
+            onChange={handleChange}
           >
           </Input>
         </Form.Item>
