@@ -1,23 +1,24 @@
 import React, { useEffect, useState } from 'react';
 import { Modal, Form, Input, Button } from 'antd';
 import axios from 'axios';
+import { useSelector, useDispatch } from 'react-redux';
+import { 
+  setFormData, 
+  updateFormData, 
+  selectFormData 
+} from './slices/formDataSlice.js';
 
 function EditUserModal(props) {
   const [visible, setVisible] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [form] = Form.useForm();
-  const [formData, setFormData] = useState({
-    id: '',
-    username: '',
-    firstName: '',
-    lastName: '',
-    phoneNumber: '',
-    accountCreatedDate: '',
-
-  });
+  const dispatch = useDispatch();
+  const formData = useSelector(selectFormData);
 
   useEffect(() => {
     setVisible(props.modalData.visible);
+    dispatch(setFormData(props.modalData.record));
+    /*
     setFormData({
       id: props.modalData.record.id,
       username: props.modalData.record.username,
@@ -26,6 +27,7 @@ function EditUserModal(props) {
       phoneNumber: props.modalData.record.phoneNumber,
       accountCreatedDate: props.modalData.record.accountCreatedDate,
     });
+    */
   }, [props]);
 
   const handleOk = () => {
@@ -44,11 +46,10 @@ function EditUserModal(props) {
   };
 
   const handleChange = (e) => {
-    setFormData((oldFormData) => {
-      oldFormData[e.target.id] = e.target.value;
-
-      return oldFormData;
-    });
+    dispatch(updateFormData({
+      name: e.target.id,
+      value: e.target.value
+    }));
   }
 
   return (
