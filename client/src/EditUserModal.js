@@ -18,16 +18,6 @@ function EditUserModal(props) {
   useEffect(() => {
     setVisible(props.modalData.visible);
     dispatch(setFormData(props.modalData.record));
-    /*
-    setFormData({
-      id: props.modalData.record.id,
-      username: props.modalData.record.username,
-      firstName: props.modalData.record.firstName,
-      lastName: props.modalData.record.lastName,
-      phoneNumber: props.modalData.record.phoneNumber,
-      accountCreatedDate: props.modalData.record.accountCreatedDate,
-    });
-    */
   }, [props]);
 
   const handleOk = () => {
