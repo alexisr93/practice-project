@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Table, Row, Col } from 'antd';
 import './App.css';
 import axios from 'axios';
-import EditContactModal from './EditContactModal';
+import EditUserModal from './EditUserModal';
 
 function UserTable() {
   const [data, setData] = useState([]);
@@ -94,7 +94,7 @@ function UserTable() {
           />
         </Col>
       </Row>
-      <EditContactModal modalData={modalData}></EditContactModal>
+      <EditUserModal modalData={modalData}></EditUserModal>
     </>
   );
 }
