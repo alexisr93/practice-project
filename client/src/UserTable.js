@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Table, Row, Col } from 'antd';
+import { Table, Row, Col, Button } from 'antd';
 import './App.css';
 import axios from 'axios';
 import EditUserModal from './EditUserModal';
@@ -67,14 +67,46 @@ function UserTable() {
       key: 'id',
       width: 70,
     },
+    {
+      title: 'Actions',
+      dataIndex: '',
+      key: 'actions',
+      width: 100,
+      render: (text, record, rowIndex) => (
+        <>
+          <Button 
+            type="primary"
+            onClick={() => handleEditClicked(record, rowIndex)}
+          >
+            Edit
+          </Button>
+          <Button 
+            onClick={() => handleDeleteClicked(record)}
+          >
+            Delete
+          </Button>
+        </>
+      ),
+    }
   ];
 
-  const rowClicked = (record, rowIndex) => {
+  const handleEditClicked = (record, rowIndex) => {
     setModalData({
       record: record,
       rowIndex: rowIndex,
       visible: true
     });
+  };
+
+  const handleDeleteClicked = async (record) => {
+    try {
+      await axios.delete(
+        'http://localhost:3003/users/' + record.id,
+      );
+    }
+    catch(error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -84,13 +116,6 @@ function UserTable() {
           <Table 
             columns={columns} 
             dataSource={data} 
-            onRow={(record, rowIndex) => {
-              return {
-                onDoubleClick: () => {
-                  rowClicked(record, rowIndex);
-                }
-              }
-            }}
           />
         </Col>
       </Row>
