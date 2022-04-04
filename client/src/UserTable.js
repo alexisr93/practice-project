@@ -4,6 +4,8 @@ import './App.css';
 import axios from 'axios';
 import EditUserModal from './EditUserModal';
 
+const API_URL = process.env.REACT_APP_API_URL;
+
 function UserTable() {
   const [data, setData] = useState([]);
   const [modalData, setModalData] = useState({
@@ -21,7 +23,7 @@ function UserTable() {
   const fetchData = async () => {
     try {
       const res = await axios(
-        'http://localhost:3003/users',
+        API_URL + 'users',
       );
 
       setData(res.data);
@@ -106,7 +108,7 @@ function UserTable() {
   const handleDeleteClicked = async (record) => {
     try {
       await axios.delete(
-        'http://localhost:3003/users/' + record.id,
+        API_URL + 'users/' + record.id,
       );
     }
     catch(error) {
