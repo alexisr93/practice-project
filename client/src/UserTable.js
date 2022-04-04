@@ -27,7 +27,7 @@ function UserTable() {
       setData(res.data);
     }
     catch(error) {
-      console.log(error);
+      console.log(error.response);
     }
   }
 
@@ -110,7 +110,7 @@ function UserTable() {
       );
     }
     catch(error) {
-      console.log(error);
+      console.log(error.response);
     }
 
     fetchData();
