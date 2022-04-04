@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Table, Row, Col } from 'antd';
+import { Table, Row, Col, Button } from 'antd';
 import './App.css';
 import axios from 'axios';
-import EditContactModal from './EditContactModal';
+import EditUserModal from './EditUserModal';
 
 function UserTable() {
   const [data, setData] = useState([]);
@@ -18,15 +18,20 @@ function UserTable() {
     }
   });
 
-  useEffect(() => {
-    const fetchData = async () => {
+  const fetchData = async () => {
+    try {
       const res = await axios(
         'http://localhost:3003/users',
       );
 
       setData(res.data);
     }
+    catch(error) {
+      console.log(error.response);
+    }
+  }
 
+  useEffect(() => {
     fetchData();
   }, []);
 
@@ -67,14 +72,48 @@ function UserTable() {
       key: 'id',
       width: 70,
     },
+    {
+      title: 'Actions',
+      dataIndex: '',
+      key: 'actions',
+      width: 100,
+      render: (text, record, rowIndex) => (
+        <>
+          <Button 
+            type="primary"
+            onClick={() => handleEditClicked(record, rowIndex)}
+          >
+            Edit
+          </Button>
+          <Button 
+            onClick={() => handleDeleteClicked(record)}
+          >
+            Delete
+          </Button>
+        </>
+      ),
+    }
   ];
 
-  const rowClicked = (record, rowIndex) => {
+  const handleEditClicked = (record, rowIndex) => {
     setModalData({
       record: record,
       rowIndex: rowIndex,
       visible: true
     });
+  };
+
+  const handleDeleteClicked = async (record) => {
+    try {
+      await axios.delete(
+        'http://localhost:3003/users/' + record.id,
+      );
+    }
+    catch(error) {
+      console.log(error.response);
+    }
+
+    fetchData();
   };
 
   return (
@@ -84,17 +123,10 @@ function UserTable() {
           <Table 
             columns={columns} 
             dataSource={data} 
-            onRow={(record, rowIndex) => {
-              return {
-                onDoubleClick: () => {
-                  rowClicked(record, rowIndex);
-                }
-              }
-            }}
           />
         </Col>
       </Row>
-      <EditContactModal modalData={modalData}></EditContactModal>
+      <EditUserModal modalData={modalData}></EditUserModal>
     </>
   );
 }
