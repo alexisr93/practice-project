@@ -18,15 +18,20 @@ function UserTable() {
     }
   });
 
-  useEffect(() => {
-    const fetchData = async () => {
+  const fetchData = async () => {
+    try {
       const res = await axios(
         'http://localhost:3003/users',
       );
 
       setData(res.data);
     }
+    catch(error) {
+      console.log(error);
+    }
+  }
 
+  useEffect(() => {
     fetchData();
   }, []);
 
@@ -107,6 +112,8 @@ function UserTable() {
     catch(error) {
       console.log(error);
     }
+
+    fetchData();
   };
 
   return (
