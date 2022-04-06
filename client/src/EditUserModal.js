@@ -1,44 +1,45 @@
-import React, { useEffect, useState } from 'react';
-import { Modal, Form, Input, Button } from 'antd';
+import React from 'react';
+import { Modal, Form, Input } from 'antd';
 import axios from 'axios';
 import { useSelector, useDispatch } from 'react-redux';
 import { 
-  setFormData, 
-  updateFormData, 
-  selectFormData 
-} from './slices/formDataSlice.js';
+  updateModalData, 
+  selectModalData 
+} from './slices/editUserModalSlice.js';
 
 function EditUserModal(props) {
-  const [visible, setVisible] = useState(false);
-  const [confirmLoading, setConfirmLoading] = useState(false);
   const [form] = Form.useForm();
   const dispatch = useDispatch();
-  const formData = useSelector(selectFormData);
-
-  useEffect(() => {
-    setVisible(props.modalData.visible);
-    dispatch(setFormData(props.modalData.record));
-  }, [props]);
+  const modalData = useSelector(selectModalData);
 
   const handleOk = () => {
-    setConfirmLoading(true);
-    axios.put('http://localhost:3003/users/'+ formData.id, formData)
+    axios.put('http://localhost:3003/users/'+ modalData.record.id, modalData.record)
     .then((res) => {
       console.log(res.data);
     });
 
-    setVisible(false);
-    setConfirmLoading(false);
+    dispatch(updateModalData({
+      name: 'visible',
+      value: false,
+    }));
+    
+    props.fetchData();
   };
 
   const handleCancel = () => {
-    setVisible(false);
+    dispatch(updateModalData({
+      name: 'visible',
+      value: false,
+    }));
   };
 
   const handleChange = (e) => {
-    dispatch(updateFormData({
-      name: e.target.id,
-      value: e.target.value
+    dispatch(updateModalData({
+      name: 'record',
+      value: {
+        ...modalData.record,
+        [e.target.id]: e.target.value,
+      }
     }));
   }
 
@@ -46,10 +47,9 @@ function EditUserModal(props) {
     <>
       <Modal 
         title="Edit Info" 
-        visible={visible}
+        visible={modalData.visible}
         onOk={handleOk} 
         onCancel={handleCancel}
-        confirmLoading={confirmLoading}
       >
       <Form
         layout="vertical"
@@ -57,23 +57,23 @@ function EditUserModal(props) {
         fields={[
           {
             name: ["username"],
-            value: formData.username,
+            value: modalData.record.username,
           },
           {
             name: ["firstName"],
-            value: formData.firstName,
+            value: modalData.record.firstName,
           },
           {
             name: ["lastName"],
-            value: formData.lastName,
+            value: modalData.record.lastName,
           },
           {
             name: ["phoneNumber"],
-            value: formData.phoneNumber,
+            value: modalData.record.phoneNumber,
           },
           {
             name: ["accountCreatedDate"],
-            value: formData.accountCreatedDate,
+            value: modalData.record.accountCreatedDate,
           },
         ]}
       >

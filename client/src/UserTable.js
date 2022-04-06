@@ -1,25 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import { Table, Row, Col, Button } from 'antd';
+import { Table, Row, Col, Button, Popconfirm } from 'antd';
 import './App.css';
 import axios from 'axios';
 import EditUserModal from './EditUserModal';
+import { useDispatch } from 'react-redux';
+import { setModalData } from './slices/editUserModalSlice.js';
 
 const API_URL = process.env.REACT_APP_API_URL;
 
 function UserTable() {
+  const dispatch = useDispatch();
   const [data, setData] = useState([]);
-  const [modalData, setModalData] = useState({
-    visible: false,
-    record: {
-      id: '',
-      username: '',
-      firstName: '',
-      lastName: '',
-      phoneNumber: '',
-      accountCreatedDate: '',
-    }
-  });
-
+  
   const fetchData = async () => {
     try {
       const res = await axios(
@@ -87,22 +79,34 @@ function UserTable() {
           >
             Edit
           </Button>
-          <Button 
-            onClick={() => handleDeleteClicked(record)}
+          <Popconfirm
+            title="Confirm Delete"
+            onConfirm={() => handleConfirmOk(record)}
+            onCancel={handleConfirmCancel}
           >
-            Delete
-          </Button>
+            <Button>Delete</Button>
+          </Popconfirm>
         </>
       ),
     }
   ];
 
+  const handleConfirmOk = (record) => {
+    handleDeleteClicked(record);
+    console.log('Delete status: succesful');
+  }
+
+  const handleConfirmCancel = () => {
+    console.log('Delete status: canceled');
+  }
+
   const handleEditClicked = (record, rowIndex) => {
-    setModalData({
+    console.log('Edit clicked');
+    dispatch(setModalData({
       record: record,
       rowIndex: rowIndex,
       visible: true
-    });
+    }));
   };
 
   const handleDeleteClicked = async (record) => {
@@ -128,7 +132,7 @@ function UserTable() {
           />
         </Col>
       </Row>
-      <EditUserModal modalData={modalData}></EditUserModal>
+      <EditUserModal fetchData={fetchData}></EditUserModal>
     </>
   );
 }
