@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Table, Row, Col, Button, Popconfirm } from 'antd';
+import { Table, Row, Col, Button, Popconfirm, Alert } from 'antd';
 import './App.css';
 import axios from 'axios';
 import EditUserModal from './EditUserModal';
@@ -9,6 +9,7 @@ import { setModalData } from './slices/editUserModalSlice.js';
 const API_URL = process.env.REACT_APP_API_URL;
 
 function UserTable() {
+  const [alertVisible, setAlertVisible] = useState(false);
   const dispatch = useDispatch();
   const [data, setData] = useState([]);
   
@@ -59,6 +60,14 @@ function UserTable() {
 
     fetchData();
   };
+
+  const handleAlert = () =>{
+    setAlertVisible(true);
+
+    setTimeout(() => {
+      setAlertVisible(false)
+    }, 1800);
+  }
 
   const columns = [
     {
@@ -132,7 +141,18 @@ function UserTable() {
           />
         </Col>
       </Row>
-      <EditUserModal fetchData={fetchData}></EditUserModal>
+      <EditUserModal fetchData={fetchData} handleAlert={handleAlert}></EditUserModal>
+      {alertVisible ? 
+        <Alert 
+          closable 
+          showIcon 
+          message={"Edit Successful"} 
+          type="success" 
+          style={{ width: 200 }}
+        >
+        </Alert> :
+        ''
+      }
     </>
   );
 }

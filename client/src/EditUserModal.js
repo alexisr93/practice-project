@@ -22,8 +22,9 @@ function EditUserModal(props) {
       name: 'visible',
       value: false,
     }));
-    
+
     props.fetchData();
+    props.handleAlert();
   };
 
   const handleCancel = () => {
