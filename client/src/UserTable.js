@@ -148,7 +148,7 @@ function UserTable() {
           showIcon 
           message={"Edit Successful"} 
           type="success" 
-          style={{ width: 200 }}
+          style={{ width: 200, marginLeft: 50, marginTop: -20 }}
         >
         </Alert> :
         ''
