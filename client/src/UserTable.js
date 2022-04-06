@@ -1,27 +1,26 @@
 import React, { useEffect, useState } from 'react';
-import { Table, Row, Col, Button } from 'antd';
+import { Table, Row, Col, Button, Popconfirm, Alert } from 'antd';
 import './App.css';
 import axios from 'axios';
 import EditUserModal from './EditUserModal';
+import { useDispatch } from 'react-redux';
+import { setModalData } from './slices/editUserModalSlice.js';
+
+const API_URL = process.env.REACT_APP_API_URL;
 
 function UserTable() {
+  const [alertVisible, setAlertVisible] = useState(false);
+  const dispatch = useDispatch();
   const [data, setData] = useState([]);
-  const [modalData, setModalData] = useState({
-    visible: false,
-    record: {
-      id: '',
-      username: '',
-      firstName: '',
-      lastName: '',
-      phoneNumber: '',
-      accountCreatedDate: '',
-    }
-  });
+  
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   const fetchData = async () => {
     try {
       const res = await axios(
-        'http://localhost:3003/users',
+        API_URL + 'users',
       );
 
       setData(res.data);
@@ -31,9 +30,44 @@ function UserTable() {
     }
   }
 
-  useEffect(() => {
+  const handleConfirmOk = (record) => {
+    handleDeleteClicked(record);
+    console.log('Delete status: succesful');
+  }
+
+  const handleConfirmCancel = () => {
+    console.log('Delete status: canceled');
+  }
+
+  const handleEditClicked = (record, rowIndex) => {
+    console.log('Edit clicked');
+    dispatch(setModalData({
+      record: record,
+      rowIndex: rowIndex,
+      visible: true
+    }));
+  };
+
+  const handleDeleteClicked = async (record) => {
+    try {
+      await axios.delete(
+        API_URL + 'users/' + record.id,
+      );
+    }
+    catch(error) {
+      console.log(error.response);
+    }
+
     fetchData();
-  }, []);
+  };
+
+  const handleAlert = () =>{
+    setAlertVisible(true);
+
+    setTimeout(() => {
+      setAlertVisible(false)
+    }, 1800);
+  }
 
   const columns = [
     {
@@ -85,36 +119,17 @@ function UserTable() {
           >
             Edit
           </Button>
-          <Button 
-            onClick={() => handleDeleteClicked(record)}
+          <Popconfirm
+            title="Confirm Delete"
+            onConfirm={() => handleConfirmOk(record)}
+            onCancel={handleConfirmCancel}
           >
-            Delete
-          </Button>
+            <Button>Delete</Button>
+          </Popconfirm>
         </>
       ),
     }
   ];
-
-  const handleEditClicked = (record, rowIndex) => {
-    setModalData({
-      record: record,
-      rowIndex: rowIndex,
-      visible: true
-    });
-  };
-
-  const handleDeleteClicked = async (record) => {
-    try {
-      await axios.delete(
-        'http://localhost:3003/users/' + record.id,
-      );
-    }
-    catch(error) {
-      console.log(error.response);
-    }
-
-    fetchData();
-  };
 
   return (
     <>
@@ -126,7 +141,18 @@ function UserTable() {
           />
         </Col>
       </Row>
-      <EditUserModal modalData={modalData}></EditUserModal>
+      <EditUserModal fetchData={fetchData} handleAlert={handleAlert}></EditUserModal>
+      {alertVisible ? 
+        <Alert 
+          closable 
+          showIcon 
+          message={"Edit Successful"} 
+          type="success" 
+          style={{ width: 200, marginLeft: 50, marginTop: -20 }}
+        >
+        </Alert> :
+        ''
+      }
     </>
   );
 }
