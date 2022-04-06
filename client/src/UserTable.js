@@ -12,6 +12,10 @@ function UserTable() {
   const dispatch = useDispatch();
   const [data, setData] = useState([]);
   
+  useEffect(() => {
+    fetchData();
+  }, []);
+
   const fetchData = async () => {
     try {
       const res = await axios(
@@ -25,9 +29,36 @@ function UserTable() {
     }
   }
 
-  useEffect(() => {
+  const handleConfirmOk = (record) => {
+    handleDeleteClicked(record);
+    console.log('Delete status: succesful');
+  }
+
+  const handleConfirmCancel = () => {
+    console.log('Delete status: canceled');
+  }
+
+  const handleEditClicked = (record, rowIndex) => {
+    console.log('Edit clicked');
+    dispatch(setModalData({
+      record: record,
+      rowIndex: rowIndex,
+      visible: true
+    }));
+  };
+
+  const handleDeleteClicked = async (record) => {
+    try {
+      await axios.delete(
+        API_URL + 'users/' + record.id,
+      );
+    }
+    catch(error) {
+      console.log(error.response);
+    }
+
     fetchData();
-  }, []);
+  };
 
   const columns = [
     {
@@ -90,37 +121,6 @@ function UserTable() {
       ),
     }
   ];
-
-  const handleConfirmOk = (record) => {
-    handleDeleteClicked(record);
-    console.log('Delete status: succesful');
-  }
-
-  const handleConfirmCancel = () => {
-    console.log('Delete status: canceled');
-  }
-
-  const handleEditClicked = (record, rowIndex) => {
-    console.log('Edit clicked');
-    dispatch(setModalData({
-      record: record,
-      rowIndex: rowIndex,
-      visible: true
-    }));
-  };
-
-  const handleDeleteClicked = async (record) => {
-    try {
-      await axios.delete(
-        API_URL + 'users/' + record.id,
-      );
-    }
-    catch(error) {
-      console.log(error.response);
-    }
-
-    fetchData();
-  };
 
   return (
     <>
